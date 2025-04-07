@@ -53,4 +53,24 @@ export class UsersService {
   async findByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email }).exec();
   }
+
+  async assignRoles(userId: string, roleIds: string[]): Promise<User | null> {
+    return this.userModel
+      .findByIdAndUpdate(
+        userId,
+        { $addToSet: { roles: { $each: roleIds } } },
+        { new: true }
+      )
+      .exec();
+  }
+
+  async removeRoles(userId: string, roleIds: string[]): Promise<User | null> {
+    return this.userModel
+      .findByIdAndUpdate(
+        userId,
+        { $pull: { roles: { $in: roleIds } } },
+        { new: true }
+      )
+      .exec();
+  }
 }
